@@ -21,12 +21,14 @@ import {
 } from '../ui/form'
 import { Input } from '../ui/input'
 import { Separator } from '../ui/separator'
+import { useUserState } from '@/stores/user.store.ts'
 
 const Login = () => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState('')
 
 	const { setAuth } = useAuthState()
+	const {setUser} = useUserState();
 	const navigate = useNavigate()
 
 	const form = useForm<z.infer<typeof loginSchema>>({
@@ -39,7 +41,9 @@ const Login = () => {
 		setIsLoading(true)
 		try {
 			const res = await signInWithEmailAndPassword(auth, email, passowrd)
-			navigate('/')
+		  setUser(res.user)
+			navigate('/');
+		
 		} catch (error) {
 			const result = error as Error
 			setError(result.message)
